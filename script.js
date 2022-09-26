@@ -6,12 +6,13 @@ function initScript() {
         if (e.key === 'Enter') {
             setTimeout(() => {
                 e.target.value = '';
-            }, 10)
-            randomSelect();
+            }, 10);
+
+            choiceBox.disabled = true;
+            randomSelect();  
         } else {
             createOptions(e.target.value);
-        }
-        
+        } 
     })
 }
 
@@ -32,21 +33,30 @@ function randomSelect() {
 
     const interval = setInterval(() => {
         const randomOption = pickRandomOption();
+        
+        if (randomOption === undefined) {
+            choiceBox.disabled = false;
+            clearTimeout(finalPick);
+            clearInterval(interval);
+        } else {
+            highlightOption(randomOption);
 
-        highlightOption(randomOption);
-
-        setTimeout(() => {
-            unhighlightOption(randomOption);
-        }, 100)
+            setTimeout(() => {
+                unhighlightOption(randomOption);
+            }, 100)
+        };
     }, 100);
 
-    setTimeout(() => {
+    const finalPick = setTimeout(() => {
         clearInterval(interval);
 
         setTimeout(() => {
             const randomOption = pickRandomOption();
-
+            
             highlightOption(randomOption);
+
+            choiceBox.disabled = false;
+            
         }, 100)
     }, repeatSelect * 100);
 }
